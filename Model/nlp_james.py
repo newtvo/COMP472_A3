@@ -1,7 +1,14 @@
 import re
+import string
 from collections import Counter
 import pandas as pd
+import numpy as np
 from nltk.corpus import stopwords
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics import classification_report
+from sklearn.model_selection import train_test_split
+
+from Model.multi_naive_bayes_james import MultinomialNaiveBayes
 
 
 class NLP():
@@ -19,12 +26,13 @@ class NLP():
 
         return cleaned_str  # returning the preprocessed string in tokenized form
 
-    def count_vectorizer(self, text, train = True, stop_word=None):
+    def tokenize_word(self, text, train = True, stop_word=None):
         # from the description, we should label this as V which will be used
         # as features but I label as vocabulary for a better understanding
         documents = text
         values = []
         preprocessed_text = []
+        docs = []
         if stop_word == None:
           stop_word = set(stopwords.words('english'))
         # Step: Bag of words
@@ -34,42 +42,78 @@ class NLP():
                 # extract each value from column text and clean text
                 # Step: Cleaning text
                 text_cleaning = self.preprocess_string(i)
+
+                docs.append(text_cleaning)
                 values = text_cleaning.split()
                 for words in values:
                     if words not in stop_word:
                         preprocessed_text.append(words)
 
+        print(docs)
+
         # Step: Frequency of words
-        frequency_list = []
-        frequency_list.append(dict(Counter(preprocessed_text)))
+        # frequency_list = []
+        # frequency_list.append(dict(Counter(preprocessed_text)))
 
         # print(frequency_list)
 
-        vocabulary = list(set([j for i in preprocessed_text for j in i]))
+        vocab = dict(Counter(preprocessed_text))
 
-        for text in frequency_list:
-            for word in vocabulary:
-                if word not in list(text.keys()):
-                    text[word] = 0
+        # vocabulary = list(set([j for i in preprocessed_text for j in i]))
 
-        df = pd.DataFrame(frequency_list)
-        df = df[sorted(list(df.columns))]
+        vectorizer = CountVectorizer()
+        vectorizer.fit(docs)
+        x = vectorizer.transform(docs)
+        print(vectorizer.vocabulary_)
+        print(x.toarray())
+        vector = x.toarray()
+        print(x)
+        return vector
 
-        vocab = df.columns.to_list()
-        return df
-
-fields = ['text', 'q1_label']
-training_set = pd.read_csv('../Dataset/covid_training.tsv',sep='\t', skipinitialspace=True, usecols = fields)
-print(training_set.head())
-
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(training_set['text'],
-                                                    training_set['q1_label'],
-                                                    random_state=1)
-nlp = NLP()
-count_vector = nlp.count_vectorizer(list(X_test[:100]))
-print(count_vector)
-# print(list(X_test[:10]))
+        # print(vocab)
+        #
+        # features = []
+        # for key in vocab:
+        #     features.append(key)
+        #
+        # # print(features)
+        #
+        # return features
 
 
+def text_cleaning(str):
+    remove_punctuation = [char for char in str if char not in string.punctuation ]
+
+    remove_punctuation = ''.join(remove_punctuation)
+    return [word.lower() for word in remove_punctuation.split() if word.lower() not in stopwords.words('english')]
+
+document = pd.read_csv('../Dataset/covid_training.tsv', sep = "\t")
+
+X_train, X_test, Y_train, Y_test = train_test_split(document['text'],
+                                                    document['q1_label'],
+                                                    random_state=None)
+# print(document.iloc[:,1].apply(text_cleaning))
+
+from sklearn.feature_extraction.text import CountVectorizer
+bow_transformer = CountVectorizer(analyzer=text_cleaning).fit(document['text'])
+
+# print(bow_transformer.vocabulary_)
+# text_bow = bow_transformer.transform(document['text'])
+# text_bow_toarray = text_bow.toarray()
+# print(text_bow_toarray)
+
+
+#
+
+X_train_dataset_bow_transformer = CountVectorizer(analyzer=text_cleaning).fit(X_train)
+X_train_dataset = X_train_dataset_bow_transformer.transform(X_train).toarray()
+X_test_dataset_bow_transformer = CountVectorizer(analyzer=text_cleaning).fit(X_test)
+X_test_dataset = X_train_dataset_bow_transformer.transform(X_test).toarray()
+
+
+clf2 = MultinomialNaiveBayes()
+clf2.fit(X_train_dataset,Y_train)
+Y_test_pred = clf2.predict(X_test_dataset)
+
+print("Naive Bayes Classification accuracy: ", classification_report(Y_test, Y_test_pred))
 
