@@ -1,7 +1,7 @@
 from Model.preprocessing import *
 
 import math
-class Model:
+class MNB_Model:
     def __init__(self, features, values, vocabulary):
         self.features = features
         self.values = values
@@ -25,12 +25,13 @@ class Model:
         yes_score = math.log10(self.yes_probabiliy)
         no_score = math.log10(1 - self.yes_probabiliy)
         for word in text:
-            if word in vocalbulary:
+            if word in self.vocabulary:
                 yes_score += math.log10((self.conditional_probality_given_yes[word] + self.smoothing) / (
-                            self.get_total_vocab_of_class(1) + len(self.vocabulary)))
+                            self.get_total_vocab_of_class(1) + (self.smoothing *len(self.vocabulary))))
                 no_score += math.log10((self.conditional_probality_given_no[word] + self.smoothing) / (
-                            self.get_total_vocab_of_class(0) + len(self.vocabulary)))
-        return 1 if yes_score > no_score else 0
+                            self.get_total_vocab_of_class(0) + (self.smoothing *len(self.vocabulary))))
+        result = 1 if yes_score > no_score else 0
+        return result, yes_score, no_score
 
     def get_total_vocab_of_class(self, target):
         count = 0
@@ -44,6 +45,6 @@ class Model:
 if __name__ == '__main__':
     X = get_features()
     y = get_values()
-    vocalbulary = get_original_vocabulary()
-    original_model = Model(X,y,vocalbulary)
+    vocabulary = get_original_vocabulary()
+    original_model = MNB_Model(X, y, vocabulary)
     print(original_model.predict(clean_text("maybe if i develop feelings for covid-19 it will leave")))
