@@ -42,9 +42,9 @@ class MNB_Model:
                         count += self.features[i][word]
         return count
 
-if __name__ == '__main__':
-    X = get_features()
-    y = get_values()
-    vocabulary = get_original_vocabulary()
-    original_model = MNB_Model(X, y, vocabulary)
-    print(original_model.predict(clean_text("maybe if i develop feelings for covid-19 it will leave")))
+# if __name__ == '__main__':
+#     X = get_features()
+#     y = get_values()
+#     vocabulary = get_original_vocabulary()
+#     original_model = MNB_Model(X, y, vocabulary)
+#     print(original_model.predict(clean_text("maybe if i develop feelings for covid-19 it will leave")))
