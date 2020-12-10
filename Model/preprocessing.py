@@ -3,6 +3,12 @@ import csv
 import re
 from collections import Counter
 
+
+def get_test_file():
+    tsv_file = open('../Dataset/covid_test_public.tsv', encoding="utf8")
+    read_tsv = csv.reader(tsv_file, delimiter="\t")
+    return read_tsv
+
 def get_text_file():
     tsv_file = open('../Dataset/covid_training.tsv', encoding="utf8")
     read_tsv = csv.reader(tsv_file, delimiter="\t")
@@ -64,8 +70,8 @@ def get_values():
         else:
             y.append(0)
     return y
-if __name__ == '__main__':
-    # print(len(ORIGINAL))
-    # print(get_features()[0])
-    print(len(get_features()))
-    print(len(get_values()))
+# if __name__ == '__main__':
+#     # print(len(ORIGINAL))
+#     # print(get_features()[0])
+#     print(len(get_features()))
+#     print(len(get_values()))
