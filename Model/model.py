@@ -31,7 +31,7 @@ class MNB_Model:
                 no_score += math.log10((self.conditional_probality_given_no[word] + self.smoothing) / (
                             self.get_total_vocab_of_class(0) + (self.smoothing *len(self.vocabulary))))
         result = 1 if yes_score > no_score else 0
-        return result, yes_score, no_score
+        return result, self.convert_to_sciencetific_notation(yes_score), self.convert_to_sciencetific_notation(no_score)
 
     def get_total_vocab_of_class(self, target):
         count = 0
@@ -41,7 +41,8 @@ class MNB_Model:
                     if self.features[i][word] != 0:
                         count += self.features[i][word]
         return count
-
+    def convert_to_sciencetific_notation(self, number):
+        return "{:.2E}".format(number)
 # if __name__ == '__main__':
 #     X = get_features()
 #     y = get_values()

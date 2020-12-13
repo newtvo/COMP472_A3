@@ -8,8 +8,8 @@ def ov_run():
     model_ov = MNB_Model(X, y, original_vocabulary)
 
     # open file
-    trace_ov_filename = '../Output/trace_nb_bow_ov.txt'
-    eval_ov_filename = '../Output/eval_nb_bow_ov.txt'
+    trace_ov_filename = './Output/trace_nb_bow_ov.txt'
+    eval_ov_filename = './Output/eval_nb_bow_ov.txt'
     trace_ov_file = open(trace_ov_filename, 'w')
     eval_ov_file = open(eval_ov_filename, 'w')
 

@@ -5,12 +5,12 @@ from collections import Counter
 
 
 def get_test_file():
-    tsv_file = open('../Dataset/covid_test_public.tsv', encoding="utf8")
+    tsv_file = open('./Dataset/covid_test_public.tsv', encoding="utf8")
     read_tsv = csv.reader(tsv_file, delimiter="\t")
     return read_tsv
 
 def get_text_file():
-    tsv_file = open('../Dataset/covid_training.tsv', encoding="utf8")
+    tsv_file = open('./Dataset/covid_training.tsv', encoding="utf8")
     read_tsv = csv.reader(tsv_file, delimiter="\t")
     return read_tsv
 

@@ -8,8 +8,8 @@ def fv_run():
     model_fv = MNB_Model(X, y, filtered_vocabulary)
 
     # open file
-    trace_fv_filename = '../Output/trace_nb_bow_fv.txt'
-    eval_fv_filename = '../Output/eval_nb_bow_fv.txt'
+    trace_fv_filename = './Output/trace_nb_bow_fv.txt'
+    eval_fv_filename = './Output/eval_nb_bow_fv.txt'
     trace_fv_file = open(trace_fv_filename, 'w')
     eval_fv_file = open(eval_fv_filename, 'w')
 
